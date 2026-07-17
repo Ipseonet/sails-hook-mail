@@ -1,0 +1,31 @@
+name: Bootstrap Publish (one-time)
+
+# ONE-TIME bootstrap for the very first npm publish of this package.
+# Trusted Publishing (OIDC) can't authorize a package that doesn't exist yet,
+# so v1.0.0 is published with a temporary NPM_TOKEN. After it's live and the
+# Trusted Publisher is configured, DELETE this file, the token, and the secret;
+# all future releases use the tokenless, stage-only publish.yml.
+#
+# Requires a repo secret NPM_TOKEN = a granular access token with "Bypass 2FA"
+# enabled and read+write on the @ipseonet scope.
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write     # provenance
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+      - run: npm ci
+      - run: npm test
+      - run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
