@@ -1,0 +1,38 @@
+name: Publish
+
+# Stages a publish to npm (with provenance) when a GitHub Release is published.
+# Cut a release from a tag (e.g. v1.1.0) after bumping the version in
+# package.json and merging to main.
+#
+# Auth: Trusted Publishing (OIDC) — no NPM_TOKEN. The npm registry trusts this
+# repo + workflow file and exchanges the id-token below for a short-lived
+# credential at run time.
+#
+# STAGE-ONLY: runs `npm stage publish`, which uploads the version but does NOT
+# make it public. A maintainer must approve it with 2FA on npmjs.com (package
+# -> Staged) before it goes live. The npm Trusted Publisher for this package
+# must have BOTH "npm publish" AND "npm stage publish" allowed actions checked
+# (stage-only permission fails the OIDC handshake with E401).
+# Requires npm >= 11.18 (installed explicitly below).
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch: {}   # manual "Run workflow" button — also only stages, never goes live
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read      # checkout
+      id-token: write     # OIDC token for Trusted Publishing + provenance
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+      - run: npm install -g npm@latest   # staged publishing + trusted publishing need npm >= 11.18
+      - run: npm ci
+      - run: npm test
+      - run: npm stage publish --access public --provenance

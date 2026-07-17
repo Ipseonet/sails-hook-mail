@@ -1,0 +1,67 @@
+{
+  "name": "@ipseonet/sails-hook-mail",
+  "version": "1.0.0",
+  "description": "Sails hook to send transactional email via Resend, SendGrid, SMTP, or a dev log transport — with a framework-agnostic, testable transport core.",
+  "keywords": [
+    "sails",
+    "sails-hook",
+    "mail",
+    "email",
+    "resend",
+    "sendgrid",
+    "smtp",
+    "nodemailer",
+    "transactional-email"
+  ],
+  "license": "MIT",
+  "author": "IPSEONET LLC",
+  "homepage": "https://github.com/Ipseonet/sails-hook-mail#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ipseonet/sails-hook-mail.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Ipseonet/sails-hook-mail/issues"
+  },
+  "type": "commonjs",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "default": "./index.js"
+    },
+    "./send": {
+      "default": "./lib/send.js"
+    }
+  },
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "lib/send.js"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "sails": {
+    "isHook": true,
+    "hookName": "mail"
+  },
+  "scripts": {
+    "test": "node --test"
+  },
+  "peerDependencies": {
+    "@sendgrid/mail": "^8.0.0",
+    "nodemailer": "^7.0.0",
+    "resend": "^6.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@sendgrid/mail": { "optional": true },
+    "nodemailer": { "optional": true },
+    "resend": { "optional": true }
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
+}
